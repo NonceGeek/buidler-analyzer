@@ -2,12 +2,12 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 
 /**
- * Deploys a contract named "OnChainBook" using the deployer account and
+ * Deploys a contract named "CommunityVerifier" using the deployer account and
  * constructor arguments set to the deployer address
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployOnChainBook: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployCommunityVerifier: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -21,7 +21,7 @@ const deployOnChainBook: DeployFunction = async function (hre: HardhatRuntimeEnv
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("OnChainBook", {
+  await deploy("CommunityVerifier", {
     from: deployer,
     // Contract constructor arguments
     args: [],
@@ -32,11 +32,11 @@ const deployOnChainBook: DeployFunction = async function (hre: HardhatRuntimeEnv
   });
 
   // Get the deployed contract
-  // const OnChainBook = await hre.ethers.getContract("OnChainBook", deployer);
+  // const CommunityVerifier = await hre.ethers.getContract("CommunityVerifier", deployer);
 };
 
-export default deployOnChainBook;
+export default deployCommunityVerifier;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags OnChainBook
-deployOnChainBook.tags = ["OnChainBook"];
+// e.g. yarn deploy --tags CommunityVerifier
+deployCommunityVerifier.tags = ["CommunityVerifier"];

@@ -4,13 +4,13 @@ import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { AbiFunctionReturnType, ContractAbi } from "~~/utils/scaffold-eth/contract";
 
 export const useCommentsReader = (commentCount: bigint | undefined) => {
-  const { data: deployedContract } = useDeployedContractInfo("OnChainBook");
+  const { data: deployedContract } = useDeployedContractInfo("CommunityVerifier");
   const contractReadsParams = [];
   for (let i = 0; i < (commentCount || 0); i++) {
     const args = [BigInt(i)];
     contractReadsParams.push({
       chainId: getTargetNetwork().id,
-      contractName: "OnChainBook",
+      contractName: "CommunityVerifier",
       functionName: "comments",
       address: deployedContract?.address,
       abi: deployedContract?.abi,

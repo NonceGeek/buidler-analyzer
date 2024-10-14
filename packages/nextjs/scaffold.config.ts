@@ -11,58 +11,7 @@ export type ScaffoldConfig = {
 };
 
 const scaffoldConfig = {
-  // targetNetwork: chains.optimism,
-  // The network where your DApp lives in
-  // targetNetwork: {
-  //   id: 31337,
-  //   name: "Localhost",
-  //   network: "localhost",
-  //   nativeCurrency: {
-  //     name: "Ether",
-  //     symbol: "ETH",
-  //     decimals: 18,
-  //   },
-  //   rpcUrls: {
-  //     default: {
-  //       http: ["http://127.0.0.1:8545"],
-  //     },
-  //     public: {
-  //       http: ["http://127.0.0.1:8545"],
-  //     },
-  //   },
-  //   blockExplorers: {
-  //     default: {
-  //       name: "Etherscan",
-  //       url: "http://127.0.0.1:8545",
-  //     },
-  //   },
-  //   testnet: true,
-  // } as Chain,
-  targetNetwork: {
-    id: 12227332,
-    name: "Neo",
-    network: "neo",
-    nativeCurrency: {
-      name: "Gas",
-      symbol: "GAS",
-      decimals: 18,
-    },
-    rpcUrls: {
-      default: {
-        http: ["https://neoxt4seed1.ngd.network"],
-      },
-      public: {
-        http: ["https://neoxt4seed1.ngd.network"],
-      },
-    },
-    // blockExplorers: {
-    //   default: {
-    //     name: "NeoScan",
-    //     url: "https://xt4scan.ngd.network/",
-    //   },
-    // },
-    testnet: true,
-  } as Chain,
+  targetNetwork: chains.optimism,
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect on the local network

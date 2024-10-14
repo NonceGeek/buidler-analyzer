@@ -7,11 +7,11 @@ import path from "path";
 import ReactMarkdown from "react-markdown";
 import { useAccount } from "wagmi";
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
+import { useCommentsReader } from "~~/components/CommunityVerifierInteractor";
 import TopicCard from "~~/components/TopicCard";
 import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { useCategoryContext } from "~~/provider/categoryProvider";
-import { useCommentsReader } from "~~/components/OnChainBookInteractor";
+
 interface ETHSpaceProps {
   markdownContentEn: string;
   markdownContentCn: string;
@@ -36,7 +36,6 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   linePositionsEn,
 }) => {
   const router = useRouter();
-  const { categories, category, loading, setCategory } = useCategoryContext();
   const [postLoading, setPostLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -56,16 +55,16 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
   const [newNoteWord, setNewNoteWord] = useState("");
 
   const [newNoteContent, setNewNoteContent] = useState("");
-  
+
   const { address } = useAccount();
   const { data: commentCount } = useScaffoldContractRead({
-    contractName: "OnChainBook",
+    contractName: "CommunityVerifier",
     functionName: "commentCount",
   });
   const commentsReader = useCommentsReader(commentCount);
 
   const { writeAsync: addCommentOnChain, isLoading: isAddingCommentOnChain } = useScaffoldContractWrite({
-    contractName: "OnChainBook",
+    contractName: "CommunityVerifier",
     functionName: "addComment",
     args: [selectedLine, newNoteWord, newNoteContent, Math.floor(Date.now() / 1000).toString()],
     onSuccess: () => {
@@ -76,13 +75,35 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     },
   });
 
+  const [githubUsername, setGithubUsername] = useState("leeduckgo");
+  const [analyzerData, setAnalyzerData] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const analyzeGithubUser = async () => {
+    if (!githubUsername) {
+      alert("Please enter a GitHub username");
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch(`https://analyzer.deno.dev/analyze_user?username=${githubUsername}`);
+      const data = await response.json();
+      setAnalyzerData(data);
+    } catch (error) {
+      console.error("Error analyzing GitHub user:", error);
+      alert("Failed to analyze GitHub user. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const fetchNotes = async () => {
     try {
       const response = await fetch("https://indiehacker.deno.dev/notes");
       const data = await response.json();
       setNotes(data);
       setNotesLines(new Set(data.filter((note: Note) => note.version === language).map((note: Note) => note.line)));
-      
     } catch (error) {
       console.error("Error fetching notes:", error);
     }
@@ -107,10 +128,7 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
       const combinedList = [...notes, ...onChainNotes];
       setCombinedNotes(combinedList);
 
-      const newCombinedNotesLines = new Set([
-        ...Array.from(notesLines),
-        ...onChainNotes.map(note => note.line)
-      ]);
+      const newCombinedNotesLines = new Set([...Array.from(notesLines), ...onChainNotes.map(note => note.line)]);
       setCombinedNotesLines(newCombinedNotesLines);
 
       console.log("onChainNotes", onChainNotes);
@@ -298,139 +316,72 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     );
   };
 
-  const renderNotes = () => {
-    if (!isExpandedRight) return null;
-
-    const filteredNotes = combinedNotes
-      .filter(note => (selectedLine === null || note.line === selectedLine) && note.version === language)
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-    if (selectedLine === null) {
-      // Render all notes
-      return filteredNotes.map(note => (
-        <div key={note.id} className="card bg-base-100 shadow-xl m-2">
-          {renderNoteContent(note)}
-        </div>
-      ));
-    } else {
-      // Render notes for the selected line
-      return (
-        <div className="space-y-4" style={{ marginTop: clickPosition ? `${clickPosition.y - 100}px` : "0" }}>
-          {renderNoteBox()}
-          {filteredNotes.map((note, index) => (
-            <div key={note.id} className="card bg-base-100 shadow-xl m-2">
-              {renderNoteContent(note)}
-            </div>
-          ))}
-        </div>
-      );
-    }
-  };
-
-  const renderNoteContent = (note: Note) => {
-    const noteContent = `> ${note.word}\n\n${note.note}`;
-    return (
-      <div className="card-body">
-        <ReactMarkdown className="prose prose-sm markdown-content">{noteContent}</ReactMarkdown>
-        <div className="card-actions justify-end">
-          <Address address={note.author} />
-          <div className="flex flex-col items-end">
-            <div className="badge badge-outline">{new Date(note.created_at).toLocaleDateString()}</div>
-            {note.onchain && <div className="badge badge-secondary mt-1">On-chain</div>}
-          </div>
-        </div>
-      </div>
-    );
-  };
+  
 
   return (
     <>
-      <div className="flex h-screen bg-base-300">
-        <div
-          className={clsx(
-            // The bg-base-300 is the color of the sidebar.
-            "transition-all bg-base-300 duration-300 ease-in-out overflow-y-auto fixed top-0 left-0 h-full",
-            isExpanded ? "w-60" : "w-0",
-          )}
-        >
-          <div className="h-full mt-4 ml-4">
-            <div className="w-full h-auto bg-base-200 rounded-box py-3 self-start" style={{ marginTop: "100px" }}>
-              <main>
-                <TopicCard />
-              </main>
-            </div>
+      <div>
+        <div className="bg-base-100 p-6 rounded-lg shadow-xl">
+          <h1 className="text-2xl font-bold text-center mb-4">Buidler Smart Analyzer</h1>
+          <div className="flex items-center justify-center space-x-2">
+            <input
+              type="text"
+              placeholder="Enter GitHub username"
+              className="input input-bordered w-full max-w-xs"
+              value={githubUsername}
+              onChange={(e) => setGithubUsername(e.target.value)}
+            />
+            <button
+              className={`btn btn-primary ${isAnalyzing ? 'loading' : ''}`}
+              onClick={analyzeGithubUser}
+              disabled={isAnalyzing}
+            >
+              {isAnalyzing ? '🤖 Analyzing...' : '🤖 Analyze'}
+            </button>
           </div>
-        </div>
-        <div className="flex-1 bg-base-300 p-4 overflow-y-auto ml-60 mr-60">
-          <div className="w-full bg-base-200 rounded-box p-3 flex flex-col">
-            {/* TODO: to make the div bellow left than now. */}
-            <div className="fixed rounded-box top-50 left-100 right-60 z-10 bg-base-200 p-4 flex items-center space-x-2 ">
-              <button onClick={toggleExpand} className="bg-base-300 p-2 h-10">
-                {isExpanded ? (
-                  <ChevronDoubleRightIcon className="h-5 w-5" />
-                ) : (
-                  <ChevronDoubleLeftIcon className="h-5 w-5" />
-                )}
-              </button>
-              <button
-                onClick={() => toggleLanguage("en")}
-                className={`bg-base-300 p-2 h-10 ${language === "en" ? "bg-primary text-primary-content" : ""}`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => toggleLanguage("cn")}
-                className={`bg-base-300 p-2 h-10 ${language === "cn" ? "bg-primary text-primary-content" : ""}`}
-              >
-                CN
-              </button>
-              <button onClick={toggleExpandRight} className="bg-base-300 p-2 h-10">
-                {isExpandedRight ? (
-                  <ChevronDoubleLeftIcon className="h-5 w-5" />
-                ) : (
-                  <ChevronDoubleRightIcon className="h-5 w-5" />
-                )}
-              </button>
-            </div>
-            <div className="mt-16">
-              {" "}
-              {/* Add margin-top to prevent content from being hidden behind the fixed div */}
-              {postLoading && (
-                <div className="flex justify-center items-center">
-                  Loading<span className="loading loading-dots loading-xs"></span>
-                </div>
-              )}
-              <div className="flex-grow overflow-y-auto">
-                <div ref={markdownRef} className="grid grid-cols-1 gap-2 p-4 md:gap-4 lg:grid-cols-1 xl:grid-cols-1">
-                  <ReactMarkdown className="markdown-content prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none break-words">
-                    {language === "en" ? markdownContentEn : markdownContentCn}
-                  </ReactMarkdown>
-                </div>
+          
+          {analyzerData && (
+            <center>
+              <div className="mt-4">
+                <table className="table-auto border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-300 px-4 py-2">Criteria</th>
+                      <th className="border border-gray-300 px-4 py-2">Result</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2">Followers > ☝️</td>
+                      <td className="border border-gray-300 px-4 py-2">{analyzerData.analysis.followersBiggerThanOne === "Yes" ? "✅" : "❌"}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2">Has Sourced & Public Repos More than 🤟</td>
+                      <td className="border border-gray-300 px-4 py-2">{analyzerData.analysis.sourcePublicRepos === "Yes" ? "✅" : "❌"}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2">Has Social Accounts 🔗</td>
+                      <td className="border border-gray-300 px-4 py-2">{analyzerData.analysis.hasSocialAccounts === "Yes" ? "✅" : "❌"}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2">Has Public Email ✉️</td>
+                      <td className="border border-gray-300 px-4 py-2">{analyzerData.analysis.hasPublicEmail === "Yes" ? "✅" : "❌"}</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-2">Active in Last Month 🕒</td>
+                      <td className="border border-gray-300 px-4 py-2">{analyzerData.analysis.lastCommitInLastMonth === "Yes" ? "✅" : "❌"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p className="mt-4 font-semibold">
+                  {Object.entries(analyzerData.analysis).filter(([key]) => key !== 'hasPublicEmail').every(([_, value]) => value === "Yes")
+                    ? "I think...this user is a real BUIDLER! ฅ≽^•⩊•^≼ฅ"
+                    : "Maybe...this user is not a real buidler TAT."}
+                </p>
               </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className={clsx(
-            "transition-all bg-base-300 duration-300 ease-in-out overflow-y-auto fixed top-0 right-0 h-full",
-            isExpandedRight ? "w-60" : "w-0",
+            </center>
           )}
-        >
-          <div className="h-full mt-4 ml-4">
-            <div className="space-y-4" style={{ marginTop: "100px" }}>
-              <main>
-                <center>
-                  <div className="flex items-center justify-center space-x-2 mb-4">
-                    <h1>{selectedLine ? `Notes for Line #${selectedLine}` : "All Notes"}</h1>
-                    <button onClick={() => setSelectedLine(null)} className="btn btn-sm btn-primary">
-                      Show All
-                    </button>
-                  </div>
-                </center>
-                {renderNotes()}
-              </main>
-            </div>
-          </div>
+          
         </div>
       </div>
     </>

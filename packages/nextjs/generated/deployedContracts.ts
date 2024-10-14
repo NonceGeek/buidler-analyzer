@@ -4,7 +4,7 @@
 //     name: "Optimism",
 //     contracts: {
 //       // Hint: config here.
-//       OnChainBook: {
+//       CommunityVerifier: {
 //         address: "0x505d9Ae884AC1A7f243152A24E0A1Cbd1d04Cc6C",
 const contracts = {
   12227332: [
@@ -13,7 +13,7 @@ const contracts = {
       name: "Neo",
       contracts: {
         // Hint: config here.
-        OnChainBook: {
+        CommunityVerifier: {
           address: "0xc6C800250dc333B07fB4054f8575D8795756F697",
 
           abi: [

@@ -10,7 +10,7 @@ Buidler Analyzer & Simple Community Verifier.
 
 > Smart Contract:
 >
-> **OP:** https://optimistic.etherscan.io/address/TODO#code
+> **OP:** https://optimistic.etherscan.io/address/0x2a05e2c16b5e83b28673e8677157dedfac488512#code
 
 ## Materials
 
@@ -37,8 +37,8 @@ To get started with dApp, follow the steps below:
 1. Clone this repo & install dependencies
 
 ```
-git clone https://github.com/NonceGeek/ai-based-smart-contract-explorer.git
-cd ai-based-smart-contract-explorer
+git clone https://github.com/NonceGeek/buidler-analyzer.git
+cd buidler-analyzer
 yarn install
 ```
 
@@ -68,7 +68,7 @@ Visit your app on: `http://localhost:3000`. You can interact with your smart con
 
 Run smart contract test with `yarn hardhat:test`
 
-- Edit your smart contract `OnChainBook.sol` in `packages/hardhat/contracts`
+- Edit your smart contract `CommunityVerifier.sol` in `packages/hardhat/contracts`
 - Edit your frontend in `packages/nextjs/pages`
 - Edit your deployment scripts in `packages/hardhat/deploy`
 
