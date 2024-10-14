@@ -200,6 +200,13 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
     return 'hundredths tens';
   }
 
+  const [randomColor, setRandomColor] = useState("");
+
+  useEffect(() => {
+    // Generate a random color when the component mounts
+    setRandomColor(Math.floor(Math.random()*16777215).toString(16));
+  }, []);
+
   return (
     <>
       <div>
@@ -245,9 +252,11 @@ const ETHSpace: NextPage<ETHSpaceProps> = ({
                 Member Count
               </h2>
               {isMembersCountLoading ? (
-                <p>Loading member count...</p>
+                <p style={{ color: `#${randomColor}` }}>Loading member count...</p>
               ) : (
-                <p className="digit">{membersCount?.toString() || "0"}</p>
+                <p className="digit" style={{ color: `#${randomColor}` }}>
+                  {membersCount?.toString() || "0"}
+                </p>
               )}
               <br></br>
               <br></br>
