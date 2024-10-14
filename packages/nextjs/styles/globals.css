@@ -100,3 +100,44 @@ p {
 .markdown-content th {
   @apply bg-gray-100 font-semibold;
 }
+
+.wrapper {
+  margin: 20px auto;
+  width: 600px;
+  position: relative;
+}
+
+.digit {
+  display: inline-block;
+  font-size: 100px;
+  color: rgba(0,0,0,0.25);
+  height: 90px;
+  line-height: 1;
+}
+
+.timePart {
+  width: 70px;
+  text-align: center;
+  height: 90px;
+  overflow: hidden;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.digitWrapper {
+  animation-timing-function: cubic-bezier(1,0,1,0);
+}
+
+.minutes .tens .digitWrapper { animation: minutesTens 600s linear infinite; }
+.minutes .ones .digitWrapper { animation: minutesOnes 60s linear infinite; }
+.seconds .tens .digitWrapper { animation: secondsTens 10s linear infinite; }
+.seconds .ones .digitWrapper { animation: secondsOnes 1s linear infinite; }
+.hundredths .tens .digitWrapper { animation: hundredthsTens 0.1s linear infinite; }
+.hundredths .ones .digitWrapper { animation: hundredthsOnes 0.01s linear infinite; }
+
+@keyframes minutesTens { 0% { transform: translateY(0); } 100% { transform: translateY(-900px); } }
+@keyframes minutesOnes { 0% { transform: translateY(0); } 100% { transform: translateY(-900px); } }
+@keyframes secondsTens { 0% { transform: translateY(0); } 100% { transform: translateY(-900px); } }
+@keyframes secondsOnes { 0% { transform: translateY(0); } 100% { transform: translateY(-900px); } }
+@keyframes hundredthsTens { 0% { transform: translateY(0); } 100% { transform: translateY(-900px); } }
+@keyframes hundredthsOnes { 0% { transform: translateY(0); } 100% { transform: translateY(-900px); } }

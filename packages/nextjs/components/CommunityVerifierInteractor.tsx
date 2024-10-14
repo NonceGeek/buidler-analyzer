@@ -3,28 +3,28 @@ import { useDeployedContractInfo, useScaffoldContractRead } from "~~/hooks/scaff
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
 import { AbiFunctionReturnType, ContractAbi } from "~~/utils/scaffold-eth/contract";
 
-export const useCommentsReader = (commentCount: bigint | undefined) => {
+export const useCommentsReader = (voteCount: bigint | undefined) => {
   const { data: deployedContract } = useDeployedContractInfo("CommunityVerifier");
   const contractReadsParams = [];
-  for (let i = 0; i < (commentCount || 0); i++) {
+  for (let i = 1; i <= (voteCount || 0); i++) {
     const args = [BigInt(i)];
     contractReadsParams.push({
       chainId: getTargetNetwork().id,
       contractName: "CommunityVerifier",
-      functionName: "comments",
+      functionName: "votes",
       address: deployedContract?.address,
       abi: deployedContract?.abi,
       args,
     });
   }
-  return useContractReads({ contracts: contractReadsParams, watch: true, enabled: !!commentCount }) as unknown as Omit<
+  return useContractReads({ contracts: contractReadsParams, watch: true, enabled: !!voteCount }) as unknown as Omit<
     ReturnType<typeof useContractReads>,
     "data" | "refetch"
   > & {
-    data: AbiFunctionReturnType<ContractAbi, "comments"> | undefined;
+    data: AbiFunctionReturnType<ContractAbi, "votes"> | undefined;
     refetch: (options?: {
       throwOnError: boolean;
       cancelRefetch: boolean;
-    }) => Promise<AbiFunctionReturnType<ContractAbi, "comments">>;
+    }) => Promise<AbiFunctionReturnType<ContractAbi, "votes">>;
   };
 };

@@ -16,6 +16,7 @@ contract CommunityVerifier {
     mapping(uint256 => Vote) public votes;
     uint256 public voteCount;
     address[] public members;
+    uint256 public membersCount;
 
     event VoteCreated(uint256 voteId, address newMemberAddress, uint256 deadline, string aiSuggestion);
     event VoteCast(uint256 voteId, address voter, bool agree);
@@ -30,6 +31,7 @@ contract CommunityVerifier {
         for (uint256 i = 0; i < _initialMembers.length; i++) {
             members.push(_initialMembers[i]);
         }
+        membersCount = _initialMembers.length;
     }
 
     function createVote(address _newMemberAddress, string memory _aiSuggestion) public {
@@ -62,6 +64,7 @@ contract CommunityVerifier {
 
         if (votes[_voteId].agreeCount > votes[_voteId].denyCount) {
             members.push(votes[_voteId].newMemberAddress);
+            membersCount++;
             emit NewMemberAdded(votes[_voteId].newMemberAddress);
         }
 

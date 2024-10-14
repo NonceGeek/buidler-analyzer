@@ -10,7 +10,7 @@ Buidler Analyzer & Simple Community Verifier.
 
 > Smart Contract:
 >
-> **OP:** https://optimistic.etherscan.io/address/0x2a05e2c16b5e83b28673e8677157dedfac488512#code
+> **OP:** https://optimistic.etherscan.io/address/0x13C47E3b65Ff6d945cb49AE335EE068b30854b10#code
 
 ## Materials
 

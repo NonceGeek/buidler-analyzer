@@ -7,159 +7,177 @@
 //       CommunityVerifier: {
 //         address: "0x505d9Ae884AC1A7f243152A24E0A1Cbd1d04Cc6C",
 const contracts = {
-  12227332: [
+  10: [
     {
-      chainId: "12227332",
-      name: "Neo",
+      chainId: "10",
+      name: "Optimism",
       contracts: {
         // Hint: config here.
         CommunityVerifier: {
-          address: "0xc6C800250dc333B07fB4054f8575D8795756F697",
+          address: "0x13C47E3b65Ff6d945cb49AE335EE068b30854b10",
 
           abi: [
             {
-              anonymous: false,
-              inputs: [
-                {
-                  indexed: false,
-                  internalType: "string",
-                  name: "name",
-                  type: "string",
-                },
-                {
-                  indexed: false,
-                  internalType: "address",
-                  name: "author",
-                  type: "address",
-                },
-                {
-                  indexed: false,
-                  internalType: "string",
-                  name: "description",
-                  type: "string",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "bodhiId",
-                  type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "string[]",
-                  name: "fullContentArweaveIds",
-                  type: "string[]",
-                },
-              ],
-              name: "BookCreated",
-              type: "event",
-            },
-            {
-              anonymous: false,
-              inputs: [
-                {
-                  indexed: false,
-                  internalType: "string",
-                  name: "description",
-                  type: "string",
-                },
-                {
-                  indexed: false,
-                  internalType: "string[]",
-                  name: "fullContentArweaveIds",
-                  type: "string[]",
-                },
-              ],
-              name: "BookUpdated",
-              type: "event",
-            },
-            {
-              anonymous: false,
-              inputs: [
-                {
-                  indexed: false,
-                  internalType: "address",
-                  name: "author",
-                  type: "address",
-                },
-                {
-                  indexed: false,
-                  internalType: "uint256",
-                  name: "lineNum",
-                  type: "uint256",
-                },
-                {
-                  indexed: false,
-                  internalType: "string",
-                  name: "referWord",
-                  type: "string",
-                },
-                {
-                  indexed: false,
-                  internalType: "string",
-                  name: "content",
-                  type: "string",
-                },
-                {
-                  indexed: false,
-                  internalType: "string",
-                  name: "timestamp",
-                  type: "string",
-                },
-              ],
-              name: "CommentAdded",
-              type: "event",
-            },
-            {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "lineNum",
+                  name: "_voteId",
                   type: "uint256",
                 },
                 {
-                  internalType: "string",
-                  name: "referWord",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "content",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "timestamp",
-                  type: "string",
+                  internalType: "bool",
+                  name: "_agree",
+                  type: "bool",
                 },
               ],
-              name: "addComment",
+              name: "castVote",
               outputs: [],
               stateMutability: "nonpayable",
               type: "function",
             },
             {
-              inputs: [],
-              name: "book",
-              outputs: [
+              inputs: [
                 {
-                  internalType: "string",
-                  name: "name",
-                  type: "string",
+                  internalType: "address",
+                  name: "_newMemberAddress",
+                  type: "address",
                 },
                 {
                   internalType: "string",
-                  name: "description",
+                  name: "_aiSuggestion",
                   type: "string",
                 },
+              ],
+              name: "createVote",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
                 {
                   internalType: "uint256",
-                  name: "bodhiId",
+                  name: "_voteId",
+                  type: "uint256",
+                },
+              ],
+              name: "finalizeVote",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "address[]",
+                  name: "_initialMembers",
+                  type: "address[]",
+                },
+              ],
+              stateMutability: "nonpayable",
+              type: "constructor",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "newMember",
+                  type: "address",
+                },
+              ],
+              name: "NewMemberAdded",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "voteId",
                   type: "uint256",
                 },
                 {
+                  indexed: false,
                   internalType: "address",
-                  name: "author",
+                  name: "voter",
+                  type: "address",
+                },
+                {
+                  indexed: false,
+                  internalType: "bool",
+                  name: "agree",
+                  type: "bool",
+                },
+              ],
+              name: "VoteCast",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "voteId",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "address",
+                  name: "newMemberAddress",
+                  type: "address",
+                },
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "deadline",
+                  type: "uint256",
+                },
+                {
+                  indexed: false,
+                  internalType: "string",
+                  name: "aiSuggestion",
+                  type: "string",
+                },
+              ],
+              name: "VoteCreated",
+              type: "event",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "address",
+                  name: "_address",
+                  type: "address",
+                },
+              ],
+              name: "isMember",
+              outputs: [
+                {
+                  internalType: "bool",
+                  name: "",
+                  type: "bool",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "members",
+              outputs: [
+                {
+                  internalType: "address",
+                  name: "",
                   type: "address",
                 },
               ],
@@ -168,7 +186,20 @@ const contracts = {
             },
             {
               inputs: [],
-              name: "commentCount",
+              name: "membersCount",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "voteCount",
               outputs: [
                 {
                   internalType: "uint256",
@@ -187,81 +218,35 @@ const contracts = {
                   type: "uint256",
                 },
               ],
-              name: "comments",
+              name: "votes",
               outputs: [
                 {
                   internalType: "address",
-                  name: "author",
+                  name: "newMemberAddress",
                   type: "address",
                 },
                 {
                   internalType: "uint256",
-                  name: "lineNum",
+                  name: "deadline",
                   type: "uint256",
                 },
                 {
                   internalType: "string",
-                  name: "referWord",
+                  name: "aiSuggestion",
                   type: "string",
                 },
                 {
-                  internalType: "string",
-                  name: "content",
-                  type: "string",
+                  internalType: "uint256",
+                  name: "agreeCount",
+                  type: "uint256",
                 },
                 {
-                  internalType: "string",
-                  name: "timestamp",
-                  type: "string",
+                  internalType: "uint256",
+                  name: "denyCount",
+                  type: "uint256",
                 },
               ],
               stateMutability: "view",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "uint256",
-                  name: "_bodhiId",
-                  type: "uint256",
-                },
-                {
-                  internalType: "string",
-                  name: "_name",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "_description",
-                  type: "string",
-                },
-                {
-                  internalType: "string[]",
-                  name: "_fullContentArweaveIds",
-                  type: "string[]",
-                },
-              ],
-              name: "createBook",
-              outputs: [],
-              stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [
-                {
-                  internalType: "string",
-                  name: "_description",
-                  type: "string",
-                },
-                {
-                  internalType: "string[]",
-                  name: "_fullContentArweaveIds",
-                  type: "string[]",
-                },
-              ],
-              name: "updateBook",
-              outputs: [],
-              stateMutability: "nonpayable",
               type: "function",
             },
           ],
